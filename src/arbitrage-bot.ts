@@ -148,7 +148,7 @@ const main = async () => {
             return new Promise((resolve) => setTimeout(resolve, ms));
         }
 
-        // await arbTrade(clearingHouse, solMarketInfo.marketIndex);
+        await arbTrade(clearingHouse, solMarketInfo.marketIndex);
         console.log('sleeping for 10 seconds...');
         sleep(10000); // wait seconds
     }
