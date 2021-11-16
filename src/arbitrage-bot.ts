@@ -92,8 +92,6 @@ const main = async () => {
 	);
 	await clearingHouse.subscribe();
 
-
-
 	// Get current price
 	const solMarketInfo = Markets.find(
 		(market) => market.baseAssetSymbol === 'SOL'
@@ -136,10 +134,7 @@ const main = async () => {
 		try{
 		const tx = await clearingHouse.initializeUserAccountAndDepositCollateral(
 			depositAmount,
-			await getTokenAddress(
-				usdcTokenAddress.toString(),
-				wallet.publicKey.toString()
-			)
+			usdcTokenAddress
 		);
 			}catch(e){
 				throw Error('ERROR: Unable to initializeUserAccountAndDepositCollateral');
@@ -153,7 +148,7 @@ const main = async () => {
             return new Promise((resolve) => setTimeout(resolve, ms));
         }
 
-        await arbTrade(clearingHouse, solMarketInfo.marketIndex);
+        // await arbTrade(clearingHouse, solMarketInfo.marketIndex);
         console.log('sleeping for 10 seconds...');
         sleep(10000); // wait seconds
     }

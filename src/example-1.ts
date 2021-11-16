@@ -112,10 +112,7 @@ const main = async () => {
 		try{
 		const tx = await clearingHouse.initializeUserAccountAndDepositCollateral(
 			depositAmount,
-			await getTokenAddress(
-				usdcTokenAddress.toString(),
-				wallet.publicKey.toString()
-			)
+			usdcTokenAddress
 		);
 			}catch(e){
 				throw Error('ERROR: Unable to initializeUserAccountAndDepositCollateral');
