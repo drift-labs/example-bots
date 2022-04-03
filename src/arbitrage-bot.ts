@@ -1,7 +1,8 @@
-import { BN, Provider, Wallet } from '@project-serum/anchor';
+import { Provider } from '@project-serum/anchor';
 import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import {
+	BN,
 	calculateMarkPrice,
 	ClearingHouse,
 	ClearingHouseUser,
@@ -14,6 +15,7 @@ import {
 	QUOTE_PRECISION,
     MARK_PRICE_PRECISION,
 	DriftEnv,
+	Wallet
 } from '@drift-labs/sdk';
 
 require('dotenv').config();

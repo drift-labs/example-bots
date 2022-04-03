@@ -1,4 +1,4 @@
-import { BN, Provider, Wallet } from '@project-serum/anchor';
+import { Provider } from '@project-serum/anchor';
 import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import {
@@ -6,6 +6,7 @@ import {
 	ClearingHouseUser,
 	initialize,
 	DriftEnv,
+	Wallet
 } from '@drift-labs/sdk';
 
 require('dotenv').config();
