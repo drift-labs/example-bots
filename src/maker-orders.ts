@@ -195,36 +195,41 @@ function constructFixedMMSpread(
 
 async function makeMarket(provider: Provider, marketIndex: BN) {
     const connection = provider.connection;
-
     const sdkConfig = initialize({ env: "devnet" as DriftEnv }); //change to "mainnet-beta" for production
     const clearingHousePublicKey = new PublicKey(
         sdkConfig.CLEARING_HOUSE_PROGRAM_ID
-        // 'AsW7LnXB9UA1uec9wi9MctYTgTz7YH9snhxd16GsFaGX' // devnet
-        // "dammHkt7jmytvbS3nHTxQNEcP59aE57nxwV21YdqEDN" // mainnet-beta
     );
     const clearingHouse = Admin.from(
         connection,
         provider.wallet,
         clearingHousePublicKey
     );
-
-    console.log("Deploying wallet:", provider.wallet.publicKey.toString());
-    console.log("ClearingHouse ProgramID:", clearingHousePublicKey.toString());
-    const usdcMint = new PublicKey(
-        "8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2"
-    );
-
-    console.log("USDC Mint:", usdcMint.toString()); // TODO: put into Next config
-    console.log("Initializing ClearingHouse");
-    console.log("Initialized ClearingHouse");
     await clearingHouse.subscribe();
 
     const user = ClearingHouseUser.from(
         clearingHouse,
         provider.wallet.publicKey
     );
-
     await user.subscribe();
+
+    console.log(
+        "User Authority:",
+        provider.wallet.publicKey.toString(),
+        "| ClearingHouse ProgramID:",
+        clearingHousePublicKey.toString()
+    );
+
+    // Drift Protocol Maker Order Example:
+    //
+    // Places a Bid/Ask 1 bp from the current Mark Price for the selected Market
+    //
+    //      e.g. Long  1 SOL @ <Market Price * .9999>
+    //      e.g. Short 1 SOL @ <Market Price * 1.0001>
+    //          ( for a $100 contract this is a 2 cent spread )
+
+    // The orders are placed atomically (all or nothing) and are by default Post Only (0 protocol fee if filled)
+    // the transaction will fail if the market moves s.t any order can be filled when recieved. this guarantees
+    // that the spread will be posted.
 
     const baseAssetAmount = AMM_RESERVE_PRECISION; // AMM_RESERVE_PRECISION is 1 SOL
     const postOnly = true;
@@ -235,7 +240,6 @@ async function makeMarket(provider: Provider, marketIndex: BN) {
         baseAssetAmount,
         postOnly
     );
-
     let tx = await cancelAllThenPlaceNewOrders(
         clearingHouse,
         user,
