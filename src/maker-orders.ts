@@ -165,11 +165,11 @@ function constructFixedMMSpread(
         marketIndex,
         PositionDirection.LONG,
         baseAssetAmount,
-        limitPrice.sub(offset),
-        false,
-        undefined,
-        undefined,
-        0,
+        limitPrice.sub(offset), // price
+        false, // reduce only
+        undefined, //discount (not currently supported)
+        undefined, // referfee (not currently supported)
+        0, // user Order Id
         postOnly,
         ZERO,
         false //ioc
@@ -220,20 +220,19 @@ async function makeMarket(provider: Provider, marketIndex: BN) {
     );
 
     // Drift Protocol Maker Order Example:
-    //
-    // Places a Bid/Ask 1 bp from the current Mark Price for the selected Market
-    //
-    //      e.g. Long  1 SOL @ <Market Price * .9999>
-    //      e.g. Short 1 SOL @ <Market Price * 1.0001>
-    //          ( for a $100 contract this is a 2 cent spread )
 
     // The orders are placed atomically (all or nothing) and are by default Post Only (0 protocol fee if filled)
     // the transaction will fail if the market moves s.t any order can be filled when recieved. this guarantees
     // that the spread will be posted.
 
-    const baseAssetAmount = AMM_RESERVE_PRECISION; // AMM_RESERVE_PRECISION is 1 SOL
-    const postOnly = true;
+    const baseAssetAmount = AMM_RESERVE_PRECISION; // AMM_RESERVE_PRECISION (1e13) represents 1 base asset (SOL/BTC/etc)
+    const postOnly = true; // 0 protocol fee (but also no price improvement)
 
+    // Places a Bid/Ask 1 bp from the current Mark Price for the selected Market
+    //
+    //      e.g. Long  1 SOL @ <Market Price * .9999>
+    //      e.g. Short 1 SOL @ <Market Price * 1.0001>
+    //          ( for a $100 contract this is a 2 cent spread )
     const bidAskOrdersParams: OrderParams[] = constructFixedMMSpread(
         clearingHouse,
         marketIndex,
